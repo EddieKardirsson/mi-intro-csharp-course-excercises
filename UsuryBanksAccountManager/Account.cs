@@ -36,11 +36,6 @@ public class Account
             Balance += type == TransactionType.Deposit ? amount : -amount;
         }
     }
-    
-    public void AddTransaction(Transaction transaction)
-    {
-        Transactions.Add(transaction);
-    }
 
     public void PrintTransactions()
     {

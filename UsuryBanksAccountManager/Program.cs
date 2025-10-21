@@ -30,32 +30,39 @@ class Program
         Console.WriteLine("Please login or register to continue.");
         Console.WriteLine();
         Console.WriteLine("Press 1 to login, 2 to register or 3 to exit.");
+        
         ConsoleKeyInfo mainMenuChoice = Console.ReadKey(false);
-        switch (mainMenuChoice)
+        switch (mainMenuChoice.Key)
         {            
-            case var keyInfo when keyInfo.Key == ConsoleKey.D1 || keyInfo.Key == ConsoleKey.NumPad1:
+            case ConsoleKey.D1 or ConsoleKey.NumPad1:
                 Console.WriteLine();
                 Console.WriteLine("Please enter your social security number and password to login.");
                 Console.WriteLine();
                 Console.WriteLine("Social security number: ");
                 string ssn = ValidateSocialSecurityInput().ToString();
+                
                 Console.WriteLine("Enter your password: ");
                 string password = Console.ReadLine() ?? string.Empty;
+                
                 LoginManager.Login(ssn, password);
                 break;
-            case var keyInfo when keyInfo.Key == ConsoleKey.D2 || keyInfo.Key == ConsoleKey.NumPad2:
+            
+            case ConsoleKey.D2 or ConsoleKey.NumPad2:
                 Console.WriteLine();
                 string newSsn = RegisterSocialSecurityNumber(); 
                 Name customerName = RegisterCustomerName();
                 string registeredPassword = RegisterPassword();
+                
                 LoginManager.Register(newSsn, customerName, registeredPassword);
                 break;
-            case var keyInfo when keyInfo.Key == ConsoleKey.D3 || keyInfo.Key == ConsoleKey.NumPad3:
+            
+            case ConsoleKey.D3 or ConsoleKey.NumPad3:
                 Console.WriteLine();
                 Console.WriteLine("Thank you for using Usury Banks Account Manager. Goodbye!");
                 Thread.Sleep(2000);
                 Environment.Exit(0);
                 break;
+            
             default:
                 Console.WriteLine();
                 Console.WriteLine("Invalid choice. Please try again.");
@@ -76,6 +83,7 @@ class Program
     {
         string? inputSsn = Console.ReadLine();
         double input;
+        
         while(!Double.TryParse(inputSsn, out input) || input < 100000000000 || input > 999999999999)
         {
             Console.WriteLine("Invalid input. Please enter a valid social security number (format: YYYYMMDDXXXX):");
@@ -100,6 +108,7 @@ class Program
         string password = Console.ReadLine() ?? string.Empty;
         Console.WriteLine("Confirm your password: ");
         string confirmPassword = Console.ReadLine() ?? string.Empty;
+        
         while (password != confirmPassword)
         {
             Console.WriteLine("Passwords do not match. Please enter your password again:");
