@@ -2,17 +2,17 @@ namespace RipOffShopOnline;
 
 public class ShoppingCart
 {
-    List<Product> Products { get; set; }
+    List<Product> ProductsInCart { get; set; }
 
     public ShoppingCart()
     {
-        Products = new List<Product>();
+        ProductsInCart = new List<Product>();
     }
     
-    public void AddToCart(Product product) => Products.Add(product);
+    public void AddToCart(Product product) => ProductsInCart.Add(product);
 
-    public void RemoveFromCart(Product product) => Products.Remove(product);
+    public void RemoveFromCart(Product product) => ProductsInCart.Remove(product);
 
-    public decimal CalculateTotalPrice() => StoreManager.CalculateTotalPrice(Products);
-    public decimal CalculateTotalPriceWithVat() => StoreManager.CalculateTotalPriceWithVat(Products);
+    public decimal CalculateTotalPrice() => StoreManager.CalculateTotalPrice(ProductsInCart);
+    public decimal CalculateTotalPriceWithVat() => StoreManager.CalculateTotalPriceWithVat(ProductsInCart);
 }

@@ -22,7 +22,7 @@ class Program
         // - Welcome Text
         DisplayWelcomeMessage();
         // - Create a Store Manager class - done
-        // - Create a shopping cart
+        StoreManager.StartSession();
         // - Add products to the shopping cart
         // - Checkout
         // - Print total price
@@ -50,5 +50,6 @@ class Program
         
         // Bottom border
         Console.WriteLine("╚" + new string('═', boxWidth) + "╝");
+        Console.WriteLine();
     }
 }
