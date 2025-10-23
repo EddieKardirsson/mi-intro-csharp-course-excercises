@@ -1,0 +1,55 @@
+namespace RipOffShopOnline;
+
+public class Product
+{
+    private int Id { get; set; }
+    public string? Name { get; private set; }
+    public ProductType Type { get; set; }
+    public decimal Price { get; private set; }
+    public int Quantity { get; private set; }
+    public decimal Vat { get; set; }
+    public decimal TotalPrice => Price + (Price * Vat);
+    
+    private const decimal BOOK_VAT = 0.06m;
+    private const decimal STANDARD_VAT = 0.25m;
+    
+    public Product(int id, string name, ProductType type, decimal price, int quantity)
+    {
+        Id = id;
+        Name = name;
+        Type = type;
+        Price = price;
+        Quantity = quantity;
+        Vat = type == ProductType.Book ? BOOK_VAT : STANDARD_VAT;
+    }
+}
+
+public enum ProductType
+{
+    Book,
+    Electronics,
+    Furniture,
+    Clothing,
+    Other
+}
+
+public static class ProductsGenerator
+{
+    public static List<Product> Products { get; set; }
+    
+    public static List<Product> GenerateProducts()
+    {
+        Products = new List<Product>
+        {
+            new Product(1, "Dave Lowrell's 1969", ProductType.Book, 299m, 100),
+            new Product(2, "Sumthing Blackhole G25 Smartphone 128 GB", ProductType.Electronics, 5990m, 50),
+            new Product(3, "ÖKEA 4-seat Sofa ", ProductType.Furniture, 9990m, 20),
+            new Product(4, "Jake & John's Denim Jeans", ProductType.Clothing, 699m, 200),
+            new Product(5, "Depresso Cottage Coffee Mug", ProductType.Other, 69.90m, 150),
+            new Product(6, "Mikael Mikael Sheep Plushy", ProductType.Other, 499m, 40)
+        };
+
+        return Products;
+    }
+    
+}
