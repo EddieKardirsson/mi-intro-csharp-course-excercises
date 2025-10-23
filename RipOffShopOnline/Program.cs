@@ -11,9 +11,6 @@
  *
  * EXTRA:
  * - Connect this project with the UsuryBanksAccountManager project. To have a simulated payment method.
- *
- * NOTE:
- * - Use base class so we can inherit from it to have different type of products. (e.g. books, clothes, electronics etc.)
  * */
 
 class Program
@@ -24,7 +21,7 @@ class Program
         // PSEUDO CODE
         // - Welcome Text
         DisplayWelcomeMessage();
-        // - Create a list of products
+        // - Create a Store Manager class - done
         // - Create a shopping cart
         // - Add products to the shopping cart
         // - Checkout
