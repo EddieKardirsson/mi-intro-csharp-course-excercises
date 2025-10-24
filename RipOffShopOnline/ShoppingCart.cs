@@ -2,7 +2,7 @@ namespace RipOffShopOnline;
 
 public class ShoppingCart
 {
-    List<Product> ProductsInCart { get; set; }
+    List<Product> ProductsInCart { get; }
 
     public ShoppingCart()
     {

@@ -2,12 +2,12 @@ namespace RipOffShopOnline;
 
 public class Product
 {
-    private int Id { get; set; }
-    public string? Name { get; private set; }
-    public ProductType Type { get; set; }
-    public decimal Price { get; private set; }
+    private int Id { get; }
+    public string? Name { get; }
+    public ProductType Type { get; }
+    public decimal Price { get; }
     public int Quantity { get; private set; }
-    public decimal Vat { get; set; }
+    private decimal Vat { get; }
     public decimal PriceWithVat => Price + (Price * Vat);
     
     private const decimal BOOK_VAT = 0.06m;

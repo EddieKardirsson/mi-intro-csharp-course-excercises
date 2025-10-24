@@ -2,10 +2,10 @@ namespace RipOffShopOnline;
 
 public static class StoreManager
 {
-    public static List<Product> Products { get; set; }
-    
-    public static ShoppingCart ShoppingCart { get; set; }
-    
+    public static List<Product> Products { get; private set; } = null!;
+
+    public static ShoppingCart ShoppingCart { get; set; } = null!;
+
     private static int _productListCounter = 0;
     
     public static decimal CalculateTotalPrice(List<Product> products) => products.Sum(p => p.Price);
