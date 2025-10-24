@@ -20,16 +20,13 @@ public static class StoreManager
         // Initialize Shopping Cart
         ShoppingCart = new ShoppingCart();
         
-        Session();
-    }
-
-    private static void Session()
-    {
-        DisplayMenuOptions();
+        SessionLoop();
     }
 
     private static void DisplayMenuOptions()
     {
+        Console.Clear();
+        Console.WriteLine("Please select an option (1-4):");
         Console.WriteLine("\t1. Show products");
         Console.WriteLine("\t2. Show shopping cart");
         Console.WriteLine("\t3. Checkout");
@@ -39,22 +36,23 @@ public static class StoreManager
     private static void SessionLoop() 
     {
         bool sessionActive = true;
+        DisplayMenuOptions();
         
         while (sessionActive)
         {
-            Console.WriteLine("Please select an option (1-4):");
+            DisplayMenuOptions();
             string? input = Console.ReadLine();
             
             switch (input)
             {
                 case "1":
-                    // TODO: ShowProducts();
+                     ShowProducts();
                     break;
                 case "2":
-                    // TODO: ShowShoppingCart();
+                    ShowShoppingCart();
                     break;
                 case "3":
-                    // TODO: Checkout();
+                    GoToCheckout();
                     break;
                 case "4":
                     sessionActive = false;
@@ -65,6 +63,57 @@ public static class StoreManager
                     break;
             }
         }
+    }
+
+    private static void ShowProducts()
+    {
+        Console.Clear();
+        Console.WriteLine("Available Products");
+        Console.WriteLine();
+        
+        for (int i = 0; i < Products.Count; i++)
+        {
+            var product = Products[i];
+            Console.WriteLine($"{i + 1}. {product.Name} - {product.PriceWithVat} kr (In stock: {product.Quantity})");
+        }
+        
+        Console.WriteLine();
+        Console.WriteLine("Enter the number of the product to add to cart, or 'b' to go back:");
+        string? input = Console.ReadLine();
+        
+        if (input?.ToLower() == "b")
+        {
+            Console.Clear();
+            return;
+        }
+        
+        if (int.TryParse(input, out int productNumber) && productNumber >= 1 && productNumber <= Products.Count)
+        {
+            var selectedProduct = Products[productNumber - 1];
+            ShoppingCart.AddToCart(selectedProduct);
+            Console.WriteLine($"{selectedProduct.Name} has been added to your cart.");
+        }
+        else
+        {
+            Console.WriteLine("Invalid input. Please try again.");
+        }
+    }
+
+    private static void ShowShoppingCart()
+    {
+        Console.Clear();
+        Console.WriteLine("Shopping Cart");
+        Console.WriteLine();
+        
+        ShoppingCart.CalculateCart(ShoppingCart.ProductsInCart);
+        Console.ReadKey(false);
+    }
+
+    private static void GoToCheckout()
+    {
+        Checkout checkout = new Checkout(ShoppingCart.ProductsInCart);
+        checkout.ShowCheckout();
+        Console.ReadKey(false);
     }
 
     public static int IncrementProductListCounter() => ++_productListCounter;
