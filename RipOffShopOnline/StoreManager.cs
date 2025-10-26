@@ -58,6 +58,9 @@ public static class StoreManager
                     sessionActive = false;
                     Console.WriteLine("Thank you for visiting Rip Off Shop Online!");
                     break;
+                case "0":
+                    AdminLevel();
+                    break;
                 default:
                     Console.WriteLine("Invalid option. Please try again.");
                     break;
@@ -109,12 +112,32 @@ public static class StoreManager
         Console.ReadKey(false);
     }
 
+    
+
     private static void GoToCheckout()
     {
         Checkout checkout = new Checkout(ShoppingCart.ProductsInCart);
         checkout.ShowCheckout();
         Console.ReadKey(false);
     }
-
+    
+    private static void AdminLevel()
+    {
+        Console.Clear();
+        Console.WriteLine("Admin level");
+        Console.WriteLine();
+        
+        Console.WriteLine("Enter the admin password: ");
+        string password = Console.ReadLine();
+        if (password == "qwerty")
+        {
+            Console.WriteLine("Welcome to admin level!");
+        }
+        else
+        {
+            Console.WriteLine("Invalid password. Please try again.");
+        }
+    }
+    
     public static int IncrementProductListCounter() => ++_productListCounter;
 }
