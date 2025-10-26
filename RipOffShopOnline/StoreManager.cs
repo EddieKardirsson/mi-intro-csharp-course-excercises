@@ -7,6 +7,7 @@ public static class StoreManager
     public static ShoppingCart ShoppingCart { get; set; } = null!;
 
     private static int _productListCounter = 0;
+    private static decimal _profit = 0m;
     
     public static decimal CalculateTotalPrice(List<Product> products) => products.Sum(p => p.Price);
     
@@ -132,6 +133,7 @@ public static class StoreManager
         if (password == "qwerty")
         {
             Console.WriteLine("Welcome to admin level!");
+            // TODO: Add admin level features here, such as tracking profits
         }
         else
         {
@@ -140,4 +142,8 @@ public static class StoreManager
     }
     
     public static int IncrementProductListCounter() => ++_productListCounter;
+    
+    public static decimal GetProfit() => _profit;
+    
+    public static void AddProfit(decimal profit) => _profit += profit;
 }

@@ -6,7 +6,7 @@ public class Product
     public string? Name { get; }
     public ProductType Type { get; }
     public decimal Price { get; }
-    public int Quantity { get; private set; }
+    public int Quantity { get; set; }
     private decimal Vat { get; }
     public decimal PriceWithVat => Price + (Price * Vat);
     
@@ -25,6 +25,10 @@ public class Product
         _purchasePrice = purchasePrice;
         Vat = type == ProductType.Book ? BOOK_VAT : STANDARD_VAT;
     }
+    
+    public void DecrementQuantity() => Quantity--;
+    
+    public decimal GetPurchasePrice() => _purchasePrice = Price;
 }
 
 public enum ProductType
