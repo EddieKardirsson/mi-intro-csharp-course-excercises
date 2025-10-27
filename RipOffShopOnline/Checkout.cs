@@ -49,7 +49,7 @@ public class Checkout(List<Product> productsInCart)
         decimal profit = 0m;
         foreach (var product in ProductsInCart)
         {
-            profit += product.Price - product.GetPurchasePrice();
+            profit += (product.Price - product.GetPurchasePrice());
         }
 
         StoreManager.AddProfit(profit);

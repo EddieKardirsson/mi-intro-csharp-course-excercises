@@ -28,7 +28,7 @@ public class Product
     
     public void DecrementQuantity() => Quantity--;
     
-    public decimal GetPurchasePrice() => _purchasePrice = Price;
+    public decimal GetPurchasePrice() => _purchasePrice;
 }
 
 public enum ProductType
@@ -52,7 +52,7 @@ public static class ProductsGenerator
             new Product("Sumthing Blackhole G25 Smartphone 128 GB", ProductType.Electronics, 5990m, 50, 2000),
             new Product("ÖKEA 4-seat Sofa ", ProductType.Furniture, 9990m, 20, 4000),
             new Product("Jake & John's Denim Jeans", ProductType.Clothing, 699m, 200, 300m),
-            new Product("Depresso Cottage Coffee Mug", ProductType.Other, 69.90m, 150, 20m),
+            new Product("Depresso Cottage Coffee Mug", ProductType.Other, 69m, 150, 20m),
             new Product("Mikael Mikael Sheep Plushy", ProductType.Other, 499m, 40, 130m)
         };
 

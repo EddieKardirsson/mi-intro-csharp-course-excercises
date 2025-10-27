@@ -133,11 +133,42 @@ public static class StoreManager
         if (password == "qwerty")
         {
             Console.WriteLine("Welcome to admin level!");
-            // TODO: Add admin level features here, such as tracking profits
+            AdminFunctions();
         }
         else
         {
             Console.WriteLine("Invalid password. Please try again.");
+        }
+        Console.ReadKey(false);
+    }
+
+    private static void AdminFunctions()
+    {
+        Console.Clear();
+        Console.WriteLine("Admin functions: ");
+        Console.WriteLine("1. Order products (Under construction)");
+        Console.WriteLine("2. Remove products (Under construction)");
+        Console.WriteLine("3. See Profits");
+        
+        string? input = Console.ReadLine();
+        //try parse input to int
+        if(!int.TryParse(input, out int adminChoice))
+        {
+            Console.WriteLine("Invalid input. Please try again.");
+            input = Console.ReadLine();
+        }
+
+        switch (adminChoice)
+        {
+            case 1:
+                // TODO: OrderProducts();
+                break;
+            case 2:
+                // TODO: RemoveProducts();
+                break;
+            case 3:
+                Console.WriteLine($"Current profits: {GetProfit()} kr."); GetProfit();
+                break;
         }
     }
     

@@ -22,6 +22,7 @@ class Program
         // PSEUDO CODE
         // - Welcome Text
         DisplayWelcomeMessage();
+        Thread.Sleep(2000);
         // - Create a Store Manager class - done
         StoreManager.StartSession();
         // - Add products to the shopping cart
