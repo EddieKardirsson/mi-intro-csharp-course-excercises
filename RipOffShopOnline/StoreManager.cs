@@ -36,10 +36,12 @@ public static class StoreManager
     
     private static void SessionLoop() 
     {
-        bool sessionActive = true;
+        bool bSessionActive = true;
+        bool bIsProductsShown = false;
+        
         DisplayMenuOptions();
         
-        while (sessionActive)
+        while (bSessionActive)
         {
             DisplayMenuOptions();
             string? input = Console.ReadLine();
@@ -47,7 +49,8 @@ public static class StoreManager
             switch (input)
             {
                 case "1":
-                     ShowProducts();
+                    bIsProductsShown = true;
+                    ShowProducts(ref bIsProductsShown);
                     break;
                 case "2":
                     ShowShoppingCart();
@@ -56,7 +59,7 @@ public static class StoreManager
                     GoToCheckout();
                     break;
                 case "4":
-                    sessionActive = false;
+                    bSessionActive = false;
                     Console.WriteLine("Thank you for visiting Rip Off Shop Online!");
                     break;
                 case "0":
@@ -69,37 +72,41 @@ public static class StoreManager
         }
     }
 
-    private static void ShowProducts()
+    private static void ShowProducts(ref bool bIsProductsShown)
     {
-        Console.Clear();
-        Console.WriteLine("Available Products");
-        Console.WriteLine();
-        
-        for (int i = 0; i < Products.Count; i++)
-        {
-            var product = Products[i];
-            Console.WriteLine($"{i + 1}. {product.Name} - {product.PriceWithVat} kr (In stock: {product.Quantity})");
-        }
-        
-        Console.WriteLine();
-        Console.WriteLine("Enter the number of the product to add to cart, or 'b' to go back:");
-        string? input = Console.ReadLine();
-        
-        if (input?.ToLower() == "b")
+        while (bIsProductsShown == true)
         {
             Console.Clear();
-            return;
-        }
+            Console.WriteLine("Available Products");
+            Console.WriteLine();
         
-        if (int.TryParse(input, out int productNumber) && productNumber >= 1 && productNumber <= Products.Count)
-        {
-            var selectedProduct = Products[productNumber - 1];
-            ShoppingCart.AddToCart(selectedProduct);
-            Console.WriteLine($"{selectedProduct.Name} has been added to your cart.");
-        }
-        else
-        {
-            Console.WriteLine("Invalid input. Please try again.");
+            for (int i = 0; i < Products.Count; i++)
+            {
+                var product = Products[i];
+                Console.WriteLine($"{i + 1}. {product.Name} - {product.PriceWithVat} kr (In stock: {product.Quantity})");
+            }
+        
+            Console.WriteLine();
+            Console.WriteLine("Enter the number of the product to add to cart, or 'b' to go back:");
+            string? input = Console.ReadLine();
+        
+            if (input?.ToLower() == "b")
+            {
+                bIsProductsShown = false;
+                Console.Clear();
+                return;
+            }
+        
+            if (int.TryParse(input, out int productNumber) && productNumber >= 1 && productNumber <= Products.Count)
+            {
+                var selectedProduct = Products[productNumber - 1];
+                ShoppingCart.AddToCart(selectedProduct);
+                Console.WriteLine($"{selectedProduct.Name} has been added to your cart.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please try again.");
+            }    
         }
     }
 
