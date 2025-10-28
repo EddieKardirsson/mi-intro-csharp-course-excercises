@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsuryBanksAccountManager", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RipOffShopOnline", "RipOffShopOnline\RipOffShopOnline.csproj", "{9101A82F-5530-4B0D-A6CD-DBE094310FAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoindextersLibrary", "PoindextersLibrary\PoindextersLibrary.csproj", "{844254E6-0BF5-4933-AC55-B2CE2439DB5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{9101A82F-5530-4B0D-A6CD-DBE094310FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9101A82F-5530-4B0D-A6CD-DBE094310FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9101A82F-5530-4B0D-A6CD-DBE094310FAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{844254E6-0BF5-4933-AC55-B2CE2439DB5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{844254E6-0BF5-4933-AC55-B2CE2439DB5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{844254E6-0BF5-4933-AC55-B2CE2439DB5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{844254E6-0BF5-4933-AC55-B2CE2439DB5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
