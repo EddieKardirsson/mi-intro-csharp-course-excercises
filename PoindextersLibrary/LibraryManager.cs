@@ -5,12 +5,15 @@ namespace PoindextersLibrary;
 public static class LibraryManager
 {
     public static List<Book> Books { get; set; } = [];
+    public static List<User> Users { get; set; } = [];
+    
+    public static User? LoggedInUser { get; set; }
     public static int IdCounter { get; set; } = 0;
     
     public const int DefaultQueryLimit = 20;
 
     public static bool bBooksMenuIsShown = false;
-
+    
     public static void PrintBooks() => Books.ForEach(book => Console.WriteLine($"{book.Id}. {book.Name}"));
 
     public static void LoanBooks()
@@ -51,6 +54,37 @@ public static class LibraryManager
                 Console.WriteLine("Invalid input. Please enter a valid book ID or 'B' to exit.");
             }
         }
+    }
+
+    public static void ReturnBooks()
+    {
+        throw new NotImplementedException();
+    }
+
+    public static void SearchBooks()
+    {
+        throw new NotImplementedException();
+    }
+
+    public static void RegisterUser()
+    {
+        Console.Clear();
+        Console.WriteLine("User Registration");
+        Console.Write("Enter First Name : ");
+        string? firstName = Console.ReadLine();
+        Console.Write("Enter Last Name : ");
+        string? lastName = Console.ReadLine();
+        Console.Write($"Enter User Name: ");
+        string? userName = Console.ReadLine();
+        Console.Write("Enter Email : ");
+        string? email = Console.ReadLine();
+        
+        User user = new User(userName, firstName, lastName, email);
+        Users.Add(user);
+        LoggedInUser = user;
+        
+        Console.WriteLine($"User {userName} Registered!");
+        Console.ReadKey(false);
     }
     
     public static async void FetchBooks(string query, int limit = DefaultQueryLimit)

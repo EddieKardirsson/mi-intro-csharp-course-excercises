@@ -20,7 +20,11 @@ class Program
         Console.WriteLine("\nMain Menu");
         Console.WriteLine("1. View Books");
         Console.WriteLine("2. Search Books");
-        Console.WriteLine("3. Exit");
+        Console.WriteLine("3. Register User");
+        Console.WriteLine("4. Login");
+        Console.WriteLine("5. Borrowed Books"); // Here you hand in the books too
+        Console.WriteLine("6. Logout");
+        Console.WriteLine("Q. Exit");
         Console.Write("Select an option: ");
         
         char input = Console.ReadKey().KeyChar;
@@ -39,8 +43,22 @@ class Program
                 }
                 break;
             case '2':
+                // TODO: LibraryManager.SearchBooks();
                 break;
             case '3':
+                LibraryManager.RegisterUser();
+                break;
+            case '4':
+                // TODO: LibraryManager.Login();
+                break;
+            case '5':
+                // TODO: LibraryManager.BorrowedBooks();
+                break;
+            case '6':
+                // TODO: LibraryManager.Logout();
+                break;
+            case 'q':
+            case 'Q':
                 Console.WriteLine("\nGoodbye!");
                 Environment.Exit(0);
                 break;
