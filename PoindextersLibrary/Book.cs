@@ -8,7 +8,7 @@ public class Book
     public string Publisher { get; } = string.Empty;
     public int Year { get; }
     // ReSharper disable once InconsistentNaming
-    public string ISBN { get; }
+    public string ISBN { get; } = string.Empty; // OpenLibrary doesn't seem to have a proper ISBN property, but I will keep it there in case I find a better and more consistent API. At Least OpenLibrary is free and is very generous with API calls, even if it's very inconsistent.
     public bool IsLoaned { get; set; }
     public DateTime? DueDate { get; set; }
     

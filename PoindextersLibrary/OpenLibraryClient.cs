@@ -6,13 +6,14 @@ public static class OpenLibraryClient
 {
     private static readonly HttpClient _httpClient = new HttpClient { BaseAddress = new Uri("https://openlibrary.org/") };
 
-    public static async Task<List<Book>> SearchBooksAsync(string query, int limit = 20)
+    public static async Task<List<Book>> SearchBooksAsync(string query, int limit = LibraryManager.DefaultQueryLimit)
     {
         if (string.IsNullOrWhiteSpace(query)) return new List<Book>();
 
         string url = $"search.json?q={Uri.EscapeDataString(query)}&limit={limit}";
         using HttpResponseMessage response = await _httpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
+        
         using Stream stream = await response.Content.ReadAsStreamAsync();
         using JsonDocument document = await JsonDocument.ParseAsync(stream);
 

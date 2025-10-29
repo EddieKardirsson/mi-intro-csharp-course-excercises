@@ -6,8 +6,8 @@ class Program
     {
         Console.CursorTop++;
         Console.OutputEncoding = System.Text.Encoding.UTF8;
-        Console.WriteLine("Hello, World!");
-        LibraryManager.FetchBooks();
+        Console.WriteLine("Welcome to Poindexter's Library!");
+        LibraryManager.FetchBooks(LibraryManager.Keywords[0]);
         Console.ReadKey(false);
         LibraryManager.Books.ForEach(book => Console.WriteLine(book.Name.ToString()));
     }
