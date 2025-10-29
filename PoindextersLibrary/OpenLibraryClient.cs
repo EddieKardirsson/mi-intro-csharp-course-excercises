@@ -24,6 +24,7 @@ public static class OpenLibraryClient
         foreach (JsonElement item in docs.EnumerateArray())
         {
             // Try several alternate fields because OpenLibrary is inconsistent
+            //int id = ++LibraryManager.IdCounter;
             string title = GetStringFromAny(item, "title", "title_suggest", "subtitle") ?? string.Empty;
             string author = GetStringFromAny(item, "author_name", "author_alternative_name") ?? string.Empty;
             string publisher = GetStringFromAny(item, "publisher") ?? string.Empty;

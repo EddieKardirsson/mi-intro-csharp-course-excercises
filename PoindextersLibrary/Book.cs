@@ -2,7 +2,7 @@ namespace PoindextersLibrary;
 
 public class Book
 {
-    private int Id { get; }
+    public int Id { get; }
     public string Name { get; } = string.Empty;
     public string Author { get; } = string.Empty;
     public string Publisher { get; } = string.Empty;
@@ -16,6 +16,7 @@ public class Book
     
     public Book(string name, string author, string publisher, int year, string isbn)
     {
+        Id = ++LibraryManager.IdCounter;
         Name = name;
         Author = author;
         Publisher = publisher;

@@ -5,9 +5,54 @@ namespace PoindextersLibrary;
 public static class LibraryManager
 {
     public static List<Book> Books { get; set; } = [];
+    public static int IdCounter { get; set; } = 0;
     
     public const int DefaultQueryLimit = 20;
 
+    public static bool bBooksMenuIsShown = false;
+
+    public static void PrintBooks() => Books.ForEach(book => Console.WriteLine($"{book.Id}. {book.Name}"));
+
+    public static void LoanBooks()
+    {
+        Console.WriteLine("Enter book's ID to loan or press B to exit: ");
+        string? input = Console.ReadLine();
+        if (input?.ToLower() == "b")
+        {
+            bBooksMenuIsShown = false;
+        }
+        else
+        {
+            int index;
+            if (int.TryParse(input, out index))
+            {
+                Book? bookToLoan = Books.Find(book => book.Id == index);
+                if (bookToLoan != null)
+                {
+                    if (!bookToLoan.IsLoaned)
+                    {
+                        bookToLoan.IsLoaned = true;
+                        bookToLoan.DueDate = DateTime.Now.AddDays(30);
+                        // TODO: add loan to database, input credentials, etc.
+                        Console.WriteLine($"You have successfully loaned '{bookToLoan.Name}'. It is due on {bookToLoan.DueDate.Value.ToShortDateString()}.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Sorry, '{bookToLoan.Name}' is already loaned out. It is due back on {bookToLoan.DueDate?.ToShortDateString()}.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Book not found. Please try again.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a valid book ID or 'B' to exit.");
+            }
+        }
+    }
+    
     public static async void FetchBooks(string query, int limit = DefaultQueryLimit)
     {
         Console.WriteLine("Fetching books...");
