@@ -49,7 +49,7 @@ class Program
                 LibraryManager.RegisterUser();
                 break;
             case '4':
-                // TODO: LibraryManager.Login();
+                LibraryManager.Login();
                 break;
             case '5':
                 // TODO: LibraryManager.BorrowedBooks();

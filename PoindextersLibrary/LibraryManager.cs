@@ -5,7 +5,7 @@ namespace PoindextersLibrary;
 public static class LibraryManager
 {
     private static List<Book> Books { get; set; } = [];
-    private static List<User> Users { get; set; } = [];
+    private static List<User> Users { get; set; } = [new User("mikaelmikael", "Mikael", "Mikael", "mikael.mikael@fakemail.com")];
     
     //public static Dictionary<User, List<Book>> ActiveLoans { get; set; } = new Dictionary<User, List<Book>>();
 
@@ -18,10 +18,8 @@ public static class LibraryManager
     public static bool bBooksMenuIsShown = false;
     
     public static void PrintBooks() => Books.ForEach(book => Console.WriteLine($"{book.Id}. {book.Name}"));
-
-    
- 
-    // Example usage in LoanBooks():
+   
+    // Main book loaning logic
     public static void LoanBooks()
     {
         Console.WriteLine("Enter book's ID to loan or press B to exit: ");
@@ -51,6 +49,7 @@ public static class LibraryManager
         }
     }
 
+    // Helper method to add a loan to the user's active loans'
     private static bool TryAddLoan(User? user, Book book)
     {
         if (user is null)
@@ -72,7 +71,7 @@ public static class LibraryManager
             ActiveLoans[userId] = loans;
         }
 
-        // Avoid duplicate entries for the same book
+        // Avoid duplicate entries for the same book (edge case identified)
         if (loans.Any(b => b.Id == book.Id))
         {
             Console.WriteLine("This book is already in the user's active loans.");
@@ -134,6 +133,24 @@ public static class LibraryManager
     public static void SearchBooks()
     {
         throw new NotImplementedException();
+    }
+
+    public static void Login()
+    {
+        Console.Clear();
+        Console.WriteLine("Please login to continue.");
+        Console.Write("Enter User Name: ");
+        string? userName = Console.ReadLine();
+        User? user = Users.Find(u => u.UserName == userName);
+        if (user != null)
+        {
+            LoggedInUser = user;
+            Console.WriteLine($"Welcome {LoggedInUser.UserName}!");
+        }
+        else
+            Console.WriteLine("User not found. Please try again.");
+        
+        Console.ReadKey(false);
     }
 
     public static void RegisterUser()
