@@ -52,7 +52,7 @@ class Program
                 LibraryManager.Login();
                 break;
             case '5':
-                // TODO: LibraryManager.BorrowedBooks();
+                LibraryManager.ShowActiveLoans();
                 break;
             case '6':
                 // TODO: LibraryManager.Logout();

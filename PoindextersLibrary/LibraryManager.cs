@@ -125,9 +125,55 @@ public static class LibraryManager
         }
     }*/
 
-    public static void ReturnBooks()
+    public static void ShowActiveLoans()
     {
-        throw new NotImplementedException();
+        if (LoggedInUser == null)
+        {
+            Console.WriteLine("\nUser not logged in. Please login to view active loans.");
+            Console.ReadKey(false);
+            return;
+        }
+        Console.Clear();
+        Console.WriteLine("Active loans:");
+        if (!ActiveLoans.ContainsKey(LoggedInUser.GetUserGuid()))
+        {
+            Console.WriteLine("No active loans found.");
+            Console.ReadKey(false);
+            return;
+        }
+        ActiveLoans[LoggedInUser.GetUserGuid()].ForEach(
+            book => Console.WriteLine($"{book.Id}. {book.Name} - Due back on {book.DueDate?.ToShortDateString()}")
+        );
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine($"To return a book, write the book's ID and press Enter, or type B to exit.");
+        string? input = Console.ReadLine();
+        if (input?.ToLower() == "b") return;
+        if (int.TryParse(input, out var bookId))
+        {
+            ReturnBook(bookId);
+        }
+        else
+        {
+            Console.WriteLine("Invalid input. Please enter a valid book ID.");
+        }
+    }
+
+    private static void ReturnBook(int bookId)
+    {
+        Book? bookToReturn = ActiveLoans[LoggedInUser.GetUserGuid()].Find(book => book.Id == bookId);
+        if (bookToReturn != null)
+        {
+            bookToReturn.IsLoaned = false;
+            bookToReturn.DueDate = null;
+            ActiveLoans[LoggedInUser.GetUserGuid()].Remove(bookToReturn);
+            Console.WriteLine($"You have successfully returned '{bookToReturn.Name}'.");
+            if(ActiveLoans[LoggedInUser.GetUserGuid()].Count == 0)
+                ActiveLoans.Remove(LoggedInUser.GetUserGuid());
+        }
+        else
+        {
+            Console.WriteLine("Book not found in your active loans.");
+        }
     }
 
     public static void SearchBooks()
