@@ -21,4 +21,6 @@ public class User
         LastName = lastName;
         Email = email;
     }
+
+    public Guid GetUserGuid() => Id;
 }

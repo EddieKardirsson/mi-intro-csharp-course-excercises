@@ -4,10 +4,13 @@ namespace PoindextersLibrary;
 
 public static class LibraryManager
 {
-    public static List<Book> Books { get; set; } = [];
-    public static List<User> Users { get; set; } = [];
+    private static List<Book> Books { get; set; } = [];
+    private static List<User> Users { get; set; } = [];
     
-    public static User? LoggedInUser { get; set; }
+    //public static Dictionary<User, List<Book>> ActiveLoans { get; set; } = new Dictionary<User, List<Book>>();
+
+    private static Dictionary<Guid, List<Book>> ActiveLoans { get; } = new();
+    private static User? LoggedInUser { get; set; }
     public static int IdCounter { get; set; } = 0;
     
     public const int DefaultQueryLimit = 20;
@@ -16,7 +19,73 @@ public static class LibraryManager
     
     public static void PrintBooks() => Books.ForEach(book => Console.WriteLine($"{book.Id}. {book.Name}"));
 
+    
+ 
+    // Example usage in LoanBooks():
     public static void LoanBooks()
+    {
+        Console.WriteLine("Enter book's ID to loan or press B to exit: ");
+        string? input = Console.ReadLine();
+        if (input?.ToLower() == "b")
+        {
+            bBooksMenuIsShown = false;
+            return;
+        }
+
+        if (!int.TryParse(input, out var index))
+        {
+            Console.WriteLine("Invalid input. Please enter a valid book ID or 'B' to exit.");
+            return;
+        }
+
+        var bookToLoan = Books.Find(book => book.Id == index);
+        if (bookToLoan is null)
+        {
+            Console.WriteLine("Book not found. Please try again.");
+            return;
+        }
+
+        if (TryAddLoan(LoggedInUser, bookToLoan))
+        {
+            Console.WriteLine($"You have successfully loaned '{bookToLoan.Name}'. It is due on {bookToLoan.DueDate!.Value.ToShortDateString()}.");
+        }
+    }
+
+    private static bool TryAddLoan(User? user, Book book)
+    {
+        if (user is null)
+        {
+            Console.WriteLine("No user is logged in.");
+            return false;
+        }
+
+        if (book.IsLoaned)
+        {
+            Console.WriteLine($"Sorry, '{book.Name}' is already loaned out. It is due back on {book.DueDate?.ToShortDateString()}.");
+            return false;
+        }
+
+        Guid userId = user.GetUserGuid(); // assumes User has an ID of type Guid
+        if (!ActiveLoans.TryGetValue(userId, out var loans))
+        {
+            loans = new List<Book>();
+            ActiveLoans[userId] = loans;
+        }
+
+        // Avoid duplicate entries for the same book
+        if (loans.Any(b => b.Id == book.Id))
+        {
+            Console.WriteLine("This book is already in the user's active loans.");
+            return false;
+        }
+
+        book.IsLoaned = true;
+        book.DueDate = DateTime.Now.AddDays(30);
+        loans.Add(book);
+        return true;
+    }
+    
+    /*public static void LoanBooks()
     {
         Console.WriteLine("Enter book's ID to loan or press B to exit: ");
         string? input = Console.ReadLine();
@@ -37,6 +106,7 @@ public static class LibraryManager
                         bookToLoan.IsLoaned = true;
                         bookToLoan.DueDate = DateTime.Now.AddDays(30);
                         // TODO: add loan to database, input credentials, etc.
+                        ActiveLoans.Add(LoggedInUser, [bookToLoan]);
                         Console.WriteLine($"You have successfully loaned '{bookToLoan.Name}'. It is due on {bookToLoan.DueDate.Value.ToShortDateString()}.");
                     }
                     else
@@ -54,7 +124,7 @@ public static class LibraryManager
                 Console.WriteLine("Invalid input. Please enter a valid book ID or 'B' to exit.");
             }
         }
-    }
+    }*/
 
     public static void ReturnBooks()
     {
