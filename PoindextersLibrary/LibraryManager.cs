@@ -83,47 +83,6 @@ public static class LibraryManager
         loans.Add(book);
         return true;
     }
-    
-    /*public static void LoanBooks()
-    {
-        Console.WriteLine("Enter book's ID to loan or press B to exit: ");
-        string? input = Console.ReadLine();
-        if (input?.ToLower() == "b")
-        {
-            bBooksMenuIsShown = false;
-        }
-        else
-        {
-            int index;
-            if (int.TryParse(input, out index))
-            {
-                Book? bookToLoan = Books.Find(book => book.Id == index);
-                if (bookToLoan != null)
-                {
-                    if (!bookToLoan.IsLoaned)
-                    {
-                        bookToLoan.IsLoaned = true;
-                        bookToLoan.DueDate = DateTime.Now.AddDays(30);
-                        // TODO: add loan to database, input credentials, etc.
-                        ActiveLoans.Add(LoggedInUser, [bookToLoan]);
-                        Console.WriteLine($"You have successfully loaned '{bookToLoan.Name}'. It is due on {bookToLoan.DueDate.Value.ToShortDateString()}.");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Sorry, '{bookToLoan.Name}' is already loaned out. It is due back on {bookToLoan.DueDate?.ToShortDateString()}.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Book not found. Please try again.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please enter a valid book ID or 'B' to exit.");
-            }
-        }
-    }*/
 
     public static void ShowActiveLoans()
     {
@@ -178,7 +137,17 @@ public static class LibraryManager
 
     public static void SearchBooks()
     {
-        throw new NotImplementedException();
+        Console.Clear();
+        Console.WriteLine("Search Books");
+        Console.Write("Enter search query: ");
+        string? query = Console.ReadLine();
+        if (query == null)
+        {
+            Console.WriteLine("Invalid input. Please enter a valid search query.");
+            return;
+        }
+        Books.FindAll(book => book.Name.Contains(query)).ForEach(book => Console.WriteLine($"{book.Id}. {book.Name}"));
+        LoanBooks();
     }
 
     public static void Login()
@@ -218,6 +187,20 @@ public static class LibraryManager
         
         Console.WriteLine($"User {userName} Registered!");
         Console.ReadKey(false);
+    }
+
+    public static void Logout()
+    {
+        Console.Clear();
+        if (LoggedInUser == null)
+        {
+            Console.WriteLine("You are already logged out.");
+            Console.ReadKey(false);
+            return;       
+        }
+        LoggedInUser = null;
+        Console.WriteLine("You have logged out.");
+        Console.ReadKey(false);   
     }
     
     public static async void FetchBooks(string query, int limit = DefaultQueryLimit)

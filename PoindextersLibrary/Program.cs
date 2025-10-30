@@ -43,7 +43,7 @@ class Program
                 }
                 break;
             case '2':
-                // TODO: LibraryManager.SearchBooks();
+                LibraryManager.SearchBooks();
                 break;
             case '3':
                 LibraryManager.RegisterUser();
@@ -55,7 +55,7 @@ class Program
                 LibraryManager.ShowActiveLoans();
                 break;
             case '6':
-                // TODO: LibraryManager.Logout();
+                LibraryManager.Logout();
                 break;
             case 'q':
             case 'Q':
