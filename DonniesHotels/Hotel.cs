@@ -5,7 +5,7 @@ public class Hotel
     public List<Room> HotelRooms { get; } = new List<Room>();
     public Dictionary<Room, Guest?> Bookings { get; } = new Dictionary<Room, Guest?>();
     
-    public Dictionary<Room, Reservation> Reservations { get; } = new Dictionary<Room, Reservation>();
+    public List<Reservation> Reservations { get; } = new List<Reservation>();
     public static List<Guest> Guests { get; } = new List<Guest>();  // for all hotels
     public static Guest? LoggedInGuest { get; set; } = null;
     public string Location { get; }
@@ -131,28 +131,57 @@ public class Hotel
         Console.WriteLine("Book Room");
         Console.WriteLine();
         
+        if (GetCheckInDetails(out var checkInDate, out var nights)) return;
+
+        DateTime checkOutDate = checkInDate.AddDays(nights);
+        if (ValidateCheckInDate(checkInDate, checkOutDate)) return;
+        
         var roomNumber = RequestRoomNumberInput();
         Room? room = CheckAvailability(roomNumber);
 
-        if (room != null)
+        if (room != null && LoggedInGuest != null)
         {
-            if (IsRoomOccupied(room)) return;
+            Reservation reservation = new Reservation(room, LoggedInGuest, checkInDate, checkOutDate);
+            if (IsRoomOccupied(room, reservation)) return;
             Bookings[room] = LoggedInGuest;
             LoggedInGuest.BookingId = Bookings[room]?.BookingId;
             LoggedInGuest.BookedRoom = room;
-            
-            // TODO: Console.WriteLine("Enter check-in date: ");
+            Reservations.Add(reservation);
             Console.WriteLine($"Room {room.RoomNumber} booked successfully.");
         }
     }
 
     // TODO: Check Availability
-    public void CheckAvailability()
+    private void CheckAvailability()
     {
         Console.Clear();
         Console.WriteLine("Check Availability");
         var roomNumber = RequestRoomNumberInput();
-        Room? room = CheckAvailability(roomNumber);
+        Room? room = HotelRooms.Find(r => r.RoomNumber == roomNumber);
+        if (room != null)
+        {
+            if (GetCheckInDetails(out var checkInDate, out var nights)) return;
+            DateTime checkOutDate = checkInDate.AddDays(nights);
+            ValidateCheckInDate(checkInDate, checkOutDate);
+            
+            Reservation? reservation = Reservations.Find(r => r.Room.RoomNumber == room.RoomNumber);
+            if (reservation != null)
+            {
+                if (LoggedInGuest == null)
+                {
+                    LoggedInGuest = new Guest("Guest", 99, "no.email@fakemail.com");
+                }
+                
+                Reservation newReservation = new Reservation(room, LoggedInGuest, checkInDate, checkOutDate);
+                if (IsRoomOccupied(room, newReservation)) return;
+                Console.Clear();
+                Console.WriteLine($"Room {room.RoomNumber} is available.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Room not found.");
+        }
     }
 
     public Room? CheckAvailability(int roomNumber)
@@ -160,7 +189,6 @@ public class Hotel
         Room? room = HotelRooms.Find(r => r.RoomNumber == roomNumber);
         if (room != null)
         {
-            if (IsRoomOccupied(room)) return null;
             Console.Clear();
             Console.WriteLine($"Room {room.RoomNumber} is available.");
             return room;
@@ -203,11 +231,41 @@ public class Hotel
         return roomNumber;
     }
     
-    private bool IsRoomOccupied(Room room)
+    private bool IsRoomOccupied(Room room, Reservation? newReservation = null)
     {
         if (Bookings.ContainsKey(room) && Bookings[room] != null)
         {
+            if (newReservation != null)
+            {
+                Reservation? existingReservation = Reservations.Find(r => r.Room.RoomNumber == room.RoomNumber);
+                if (existingReservation != null)
+                {
+                    if (Reservation.IsOverlapping(existingReservation, newReservation))
+                    {
+                        LogRoomBookingConflict(existingReservation);
+                        return true;
+                    }
+                }
+            }
+            
             Console.WriteLine($"Room {room.RoomNumber} is already booked.");
+            return true;
+        }
+
+        return false;
+
+        void LogRoomBookingConflict(Reservation existingReservation)
+        {
+            Console.WriteLine($"Room {room.RoomNumber} is already booked.");
+            Console.WriteLine($"The room will be available again on {existingReservation.EndDate:yyyy-MM-dd}.");
+        }
+    }
+    
+    private static bool ValidateCheckInDate(DateTime checkInDate, DateTime checkOutDate)
+    {
+        if (checkInDate > checkOutDate)
+        {
+            Console.WriteLine("Check-in date cannot be after check-out date.");
             return true;
         }
 
@@ -224,6 +282,46 @@ public class Hotel
 
         return false;
     }
+    
+    private static bool GetCheckInDetails(out DateTime checkInDate, out int nights)
+    {
+        Console.WriteLine("Enter check-in date (YYYY-MM-DD): ");
+        // TODO: Check in date and how many nights to stay.
+        string? checkInInput = Console.ReadLine();
+        if (string.IsNullOrEmpty(checkInInput))
+        {
+            nights = 0;
+            checkInDate = default;
+            return true;
+        }
+        while (!DateTime.TryParse(checkInInput, out checkInDate))
+        {
+            Console.WriteLine("Invalid date format. Please enter a valid check-in date (YYYY-MM-DD).");
+            checkInInput = Console.ReadLine();
+        }
+
+        Console.WriteLine("How many nights to stay? : ");
+        string? checkOutInput = Console.ReadLine();
+        if (string.IsNullOrEmpty(checkOutInput))
+        {
+            nights = 0;
+            return true;
+        }
+        while (!int.TryParse(checkOutInput, out nights))
+        {
+            Console.WriteLine("Invalid number of nights. Please enter a valid number of nights.");
+            checkOutInput = Console.ReadLine();
+        }
+
+        return false;
+    }
+
+    private DateTime GetCheckInDate()
+    {
+        throw new NotImplementedException();   
+    }
+
+    
     
     // Generate test guest for debug purpose
     public static void GenerateTestGuest()

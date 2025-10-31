@@ -16,4 +16,11 @@ public class Reservation
         StartDate = startDate;
         EndDate = endDate;
     }
+
+    public static bool IsOverlapping(Reservation res1, Reservation res2)
+    {
+        return res1.Room.RoomNumber == res2.Room.RoomNumber &&
+               res1.StartDate < res2.EndDate &&
+               res2.StartDate < res1.EndDate;
+    }
 }

@@ -26,5 +26,6 @@ public class Room
         RoomNumber = roomNumber;
         Area = area;
     }
+    
 }
 
