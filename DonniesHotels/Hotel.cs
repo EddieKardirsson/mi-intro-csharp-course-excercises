@@ -3,7 +3,9 @@ namespace DonniesHotels;
 public class Hotel
 {
     public List<Room> HotelRooms { get; } = new List<Room>();
-    public Dictionary<Room, Guest?> Reservations { get; } = new Dictionary<Room, Guest?>();
+    public Dictionary<Room, Guest?> Bookings { get; } = new Dictionary<Room, Guest?>();
+    
+    public Dictionary<Room, Reservation> Reservations { get; } = new Dictionary<Room, Reservation>();
     public static List<Guest> Guests { get; } = new List<Guest>();  // for all hotels
     public static Guest? LoggedInGuest { get; set; } = null;
     public string Location { get; }
@@ -31,7 +33,7 @@ public class Hotel
         Console.WriteLine("| 1. Login/Register                                       |");
         Console.WriteLine("| 2. Book Room                                            |");
         Console.WriteLine("| 3. Check Availability                                   |");
-        Console.WriteLine("| 4. Cancel Reservation                                   |");
+        Console.WriteLine("| 4. Manage Reservation                                   |");
         Console.WriteLine("| 5. Logout                                               |");
         Console.WriteLine("| 6. Calculate Revenue                                    |");
         Console.WriteLine("| Q. Exit                                                 |");
@@ -49,13 +51,15 @@ public class Hotel
                 LoginOrRegister(); 
                 break;
             case '2':
-                // TODO: BookRoom
+                BookRoom();
+                Console.ReadKey(false);
                 break;
             case '3':
-                // TODO: CheckAvailability
+                CheckAvailability();
+                Console.ReadKey(false);
                 break;
             case '4':
-                // TODO: CancelReservation
+                // TODO: ManageReservation
                 break;
             case '5':
                 // TODO: Logout
@@ -84,7 +88,7 @@ public class Hotel
         if (guest != null)
         {
             Console.WriteLine("Welcome back!");
-            // TODO: Login
+            Login(guest);
         }
         else
         {
@@ -118,10 +122,60 @@ public class Hotel
     public static void Login(Guest guest) => LoggedInGuest = guest;
     
     // TODO: Book Room
-    
+    public void BookRoom()
+    {
+        Console.Clear();
+        if (CheckUserLoginStatus()) return;
+        
+        Console.Clear();
+        Console.WriteLine("Book Room");
+        Console.WriteLine();
+        
+        var roomNumber = RequestRoomNumberInput();
+        Room? room = CheckAvailability(roomNumber);
+
+        if (room != null)
+        {
+            if (IsRoomOccupied(room)) return;
+            Bookings[room] = LoggedInGuest;
+            LoggedInGuest.BookingId = Bookings[room]?.BookingId;
+            LoggedInGuest.BookedRoom = room;
+            
+            // TODO: Console.WriteLine("Enter check-in date: ");
+            Console.WriteLine($"Room {room.RoomNumber} booked successfully.");
+        }
+    }
+
     // TODO: Check Availability
+    public void CheckAvailability()
+    {
+        Console.Clear();
+        Console.WriteLine("Check Availability");
+        var roomNumber = RequestRoomNumberInput();
+        Room? room = CheckAvailability(roomNumber);
+    }
+
+    public Room? CheckAvailability(int roomNumber)
+    {
+        Room? room = HotelRooms.Find(r => r.RoomNumber == roomNumber);
+        if (room != null)
+        {
+            if (IsRoomOccupied(room)) return null;
+            Console.Clear();
+            Console.WriteLine($"Room {room.RoomNumber} is available.");
+            return room;
+        }
+        Console.WriteLine("Room not found.");
+        return null;
+    }
     
-    // TODO: Cancel Reservation
+    // TODO: Manage Reservation
+    public void ManageReservation()
+    {
+        if (CheckUserLoginStatus()) return;
+        
+        // TODO: Logic for managing reservation
+    }
     
     // TODO: Logout
     
@@ -132,6 +186,43 @@ public class Hotel
     {
         Console.WriteLine("\nGoodbye");
         Environment.Exit(0);
+    }
+    
+    // ----------------------------------------- Helper methods------------------------------------------------------
+    private static int RequestRoomNumberInput()
+    {
+        Console.Write("\nEnter room number: ");
+        string? roomNumberInput = Console.ReadLine();
+        int roomNumber;
+        while (!int.TryParse(roomNumberInput, out roomNumber))
+        {
+            Console.WriteLine("Invalid room number. Please enter a valid room number.");
+            roomNumberInput = Console.ReadLine();
+        }
+
+        return roomNumber;
+    }
+    
+    private bool IsRoomOccupied(Room room)
+    {
+        if (Bookings.ContainsKey(room) && Bookings[room] != null)
+        {
+            Console.WriteLine($"Room {room.RoomNumber} is already booked.");
+            return true;
+        }
+
+        return false;
+    }
+    
+    private static bool CheckUserLoginStatus()
+    {
+        if (LoggedInGuest == null)
+        {
+            Console.WriteLine("You are not logged in. Please login to continue.");
+            return true;
+        }
+
+        return false;
     }
     
     // Generate test guest for debug purpose
