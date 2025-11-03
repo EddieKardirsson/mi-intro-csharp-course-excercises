@@ -59,7 +59,8 @@ public class Hotel
                 Console.ReadKey(false);
                 break;
             case '4':
-                // TODO: ManageReservation
+                ManageReservation();
+                Console.ReadKey(false);
                 break;
             case '5':
                 // TODO: Logout
@@ -130,6 +131,8 @@ public class Hotel
         Console.Clear();
         Console.WriteLine("Book Room");
         Console.WriteLine();
+        HotelGenerator.PrintHotelInfo(Location);
+        Console.WriteLine();
         
         if (GetCheckInDetails(out var checkInDate, out var nights)) return;
 
@@ -138,11 +141,23 @@ public class Hotel
         
         var roomNumber = RequestRoomNumberInput();
         Room? room = CheckAvailability(roomNumber);
-
+        
         if (room != null && LoggedInGuest != null)
         {
             Reservation reservation = new Reservation(room, LoggedInGuest, checkInDate, checkOutDate);
             if (IsRoomOccupied(room, reservation)) return;
+            
+            var price = reservation.GetReservationPrice();
+            Console.WriteLine($"That will be {price:C} kr" +
+                              $"\nWould you like to reserve room {roomNumber}? (Y/N): ");
+            char confirmInput = Console.ReadKey().KeyChar;
+            if (confirmInput != 'Y' && confirmInput != 'y')
+            {
+                Console.WriteLine("\nBooking cancelled.");
+                return;
+            }
+            
+            TotalRevenue += price;
             Bookings[room] = LoggedInGuest;
             LoggedInGuest.BookingId = Bookings[room]?.BookingId;
             LoggedInGuest.BookedRoom = room;
@@ -172,8 +187,8 @@ public class Hotel
                     LoggedInGuest = new Guest("Guest", 99, "no.email@fakemail.com");
                 }
                 
-                Reservation newReservation = new Reservation(room, LoggedInGuest, checkInDate, checkOutDate);
-                if (IsRoomOccupied(room, newReservation)) return;
+                Reservation potentialReservation = new Reservation(room, LoggedInGuest, checkInDate, checkOutDate);
+                if (IsRoomOccupied(room, potentialReservation)) return;
                 Console.Clear();
                 Console.WriteLine($"Room {room.RoomNumber} is available.");
             }
@@ -190,7 +205,7 @@ public class Hotel
         if (room != null)
         {
             Console.Clear();
-            Console.WriteLine($"Room {room.RoomNumber} is available.");
+            Console.WriteLine($"DEBUG: Room {room.RoomNumber} exists.");
             return room;
         }
         Console.WriteLine("Room not found.");
@@ -200,9 +215,22 @@ public class Hotel
     // TODO: Manage Reservation
     public void ManageReservation()
     {
+        Console.Clear();
         if (CheckUserLoginStatus()) return;
         
-        // TODO: Logic for managing reservation
+        List<Reservation> guestReservations = Reservations.FindAll(r => r.Guest.GuestId == LoggedInGuest?.GuestId);
+        
+        Console.WriteLine("Manage Your Reservations\n");
+        Console.WriteLine("\t--------------------------------------------------------------------------");
+        guestReservations.ForEach(r =>
+        {
+            Console.WriteLine(
+                $"\t| Reservation ID: {r.ReservationId} | Room: {r.Room.RoomNumber} " +
+                $"\n\t| Check-in: {r.StartDate:yyyy-MM-dd} | Check-out: {r.EndDate:yyyy-MM-dd} | " +
+                $"Price: {r.GetReservationPrice():C} kr"
+                );
+            Console.WriteLine("\t--------------------------------------------------------------------------\n");
+        });
     }
     
     // TODO: Logout
@@ -227,7 +255,7 @@ public class Hotel
             Console.WriteLine("Invalid room number. Please enter a valid room number.");
             roomNumberInput = Console.ReadLine();
         }
-
+        
         return roomNumber;
     }
     
@@ -245,7 +273,10 @@ public class Hotel
                         LogRoomBookingConflict(existingReservation);
                         return true;
                     }
+                    Console.WriteLine("DEBUG existingReservation null: No overlapping reservations found.");
+                    return false;
                 }
+                Console.WriteLine("DEBUG newReservation null: No overlapping reservations found.");
             }
             
             Console.WriteLine($"Room {room.RoomNumber} is already booked.");
@@ -285,17 +316,21 @@ public class Hotel
     
     private static bool GetCheckInDetails(out DateTime checkInDate, out int nights)
     {
-        Console.WriteLine("Enter check-in date (YYYY-MM-DD): ");
+        Console.WriteLine("Enter check-in date (YYYY-MM-DD) or press B to go back: ");
         // TODO: Check in date and how many nights to stay.
         string? checkInInput = Console.ReadLine();
+        
         if (string.IsNullOrEmpty(checkInInput))
         {
-            nights = 0;
-            checkInDate = default;
-            return true;
+            return CheckInDetails(out checkInDate, out nights);
         }
         while (!DateTime.TryParse(checkInInput, out checkInDate))
         {
+            if (checkInInput?.ToLower() == "b")
+            {
+                return CheckInDetails(out checkInDate, out nights);
+            }
+            
             Console.WriteLine("Invalid date format. Please enter a valid check-in date (YYYY-MM-DD).");
             checkInInput = Console.ReadLine();
         }
@@ -314,18 +349,25 @@ public class Hotel
         }
 
         return false;
+
+        bool CheckInDetails(out DateTime dateTime, out int i)
+        {
+            i = 0;
+            dateTime = default;
+            return true;
+        }
     }
 
     private DateTime GetCheckInDate()
     {
         throw new NotImplementedException();   
     }
-
-    
-    
+  
     // Generate test guest for debug purpose
     public static void GenerateTestGuest()
     {
+        Guest admin = new Guest("Donnie Admin", 79, "admin@fakemail.com", true);
+        Guests.Add(admin);
         Guest guest = new Guest("Mikael Mikael", 31, "mikaelmikael@fakemail.com");
         Guests.Add(guest);
     }

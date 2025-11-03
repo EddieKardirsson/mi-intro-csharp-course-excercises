@@ -11,14 +11,14 @@ public enum RoomType
 public class Room
 {
     public RoomType Type { get; }
-    public int Price { get; } // per night
+    public decimal Price { get; } // per night
     public int Floor { get; set; }
     public int RoomNumber { get; set; }
     public float Area { get; set; } // in m2
     public bool IsBooked { get; set; } = false;
     public Guid? BookingId { get; set; }
     
-    public Room(RoomType type, int floor, int price, int roomNumber, float area)
+    public Room(RoomType type, int floor, decimal price, int roomNumber, float area)
     {
         Type = type;
         Floor = floor;
@@ -26,6 +26,8 @@ public class Room
         RoomNumber = roomNumber;
         Area = area;
     }
+    
+    
     
 }
 
