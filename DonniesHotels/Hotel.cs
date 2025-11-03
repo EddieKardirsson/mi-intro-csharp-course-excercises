@@ -36,6 +36,7 @@ public class Hotel
         Console.WriteLine("| 4. Manage Reservation                                   |");
         Console.WriteLine("| 5. Logout                                               |");
         Console.WriteLine("| 6. Calculate Revenue                                    |");
+        Console.WriteLine("| 7. Check All Reservations                               |");
         Console.WriteLine("| Q. Exit                                                 |");
         Console.WriteLine("-----------------------------------------------------------");
         Console.Write("Select an option: ");
@@ -66,7 +67,12 @@ public class Hotel
                 Logout();
                 break;
             case '6':
-                // TODO: CalculateRevenue
+                ShowTotalRevenue();
+                Console.ReadKey(false);
+                break;
+            case '7':
+                CheckAllReservations();
+                Console.ReadKey(false);
                 break;
             case 'q':
             case 'Q':
@@ -233,21 +239,51 @@ public class Hotel
         });
     }
     
-    // TODO: Logout
     public static void Logout()
     {
         Console.Clear();
-        Console.WriteLine($"Logging {LoggedInGuest} out...");
+        if (LoggedInGuest is null)
+        {
+            Console.WriteLine("You are already logged out.");
+            Console.ReadKey(false);
+            return;      
+        }
+        Console.WriteLine($"Logging {LoggedInGuest.Name} out...");
         Thread.Sleep(1000);
         LoggedInGuest = null;
         Console.WriteLine("You have logged out.");
         Console.ReadKey(false);   
     }
     
-    // TODO: Calculate Revenue
-    
-    // TODO: Logout
-    public static void Exit()
+    private static void ShowTotalRevenue()
+    {
+        Console.Clear();
+        if (CheckAuthorization()) return;
+        Console.WriteLine($"Total Revenue: {TotalRevenue:C} kr");
+    }
+
+    private void CheckAllReservations()
+    {
+        Console.Clear();
+        if (CheckAuthorization()) return;
+        
+        if (Reservations.Count == 0)
+        {
+            Console.WriteLine("No reservations found.");
+            return;
+        }
+        
+        Reservations.ForEach(r =>
+        {
+            Console.WriteLine(
+                $"Guest: {r.Guest.Name} | Room: {r.Room.RoomNumber} | " +
+                $"Check-in: {r.StartDate:yyyy-MM-dd} | Check-out: {r.EndDate:yyyy-MM-dd} | " +
+                $"Price: {r.GetReservationPrice():C} kr | Reservation ID: {r.ReservationId}"
+                );
+        });
+    }    
+
+    private static void Exit()
     {
         Console.WriteLine("\nGoodbye");
         Environment.Exit(0);
@@ -317,6 +353,17 @@ public class Hotel
         if (LoggedInGuest == null)
         {
             Console.WriteLine("You are not logged in. Please login to continue.");
+            return true;
+        }
+
+        return false;
+    }
+    
+    private static bool CheckAuthorization()
+    {
+        if (LoggedInGuest == null || !LoggedInGuest.IsAdmin)
+        {
+            Console.WriteLine("You are not authorized to view revenue.");
             return true;
         }
 

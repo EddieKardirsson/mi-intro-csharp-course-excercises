@@ -17,6 +17,7 @@ public class Guest
         Name = name;
         Age = age;
         Email = email;
+        _isAdmin = isAdmin;
     }
     
     public bool IsAdmin => _isAdmin;
