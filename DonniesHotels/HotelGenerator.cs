@@ -161,6 +161,5 @@ public static class HotelGenerator
                 $"Price: {room.Price} kr/night | Area: {room.Area} m2 | Booked: {room.IsBooked}");
         });
         
-        
     }
 }

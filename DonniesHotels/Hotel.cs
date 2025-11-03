@@ -63,7 +63,7 @@ public class Hotel
                 Console.ReadKey(false);
                 break;
             case '5':
-                // TODO: Logout
+                Logout();
                 break;
             case '6':
                 // TODO: CalculateRevenue
@@ -234,6 +234,15 @@ public class Hotel
     }
     
     // TODO: Logout
+    public static void Logout()
+    {
+        Console.Clear();
+        Console.WriteLine($"Logging {LoggedInGuest} out...");
+        Thread.Sleep(1000);
+        LoggedInGuest = null;
+        Console.WriteLine("You have logged out.");
+        Console.ReadKey(false);   
+    }
     
     // TODO: Calculate Revenue
     
